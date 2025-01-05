@@ -11,6 +11,7 @@ Config = {
             title = 'chroma-enginesoundmenu',
             type = type,
             position = 'center-right',
+            duration = 6500,
         })
     end,
     BanPlayer = function(src)
