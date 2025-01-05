@@ -256,9 +256,8 @@ AddStateBagChangeHandler(
     nil,
     function(bagName, _, value)
         local entity = GetEntityFromStateBagName(bagName)
-        if entity == 0 then
-            return
-        end
+        if entity == 0 then return end
+        if not IsEntityAVehicle(entity) then return end
         ForceUseAudioGameObject(entity, value)
     end
 )
