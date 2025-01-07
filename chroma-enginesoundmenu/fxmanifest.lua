@@ -17,5 +17,5 @@ server_scripts {
 dependency 'ox_lib'
 
 author 'Grav'
-version '1.5'
+version '1.5.1'
 description 'Engine sound menu that syncs to other players'
