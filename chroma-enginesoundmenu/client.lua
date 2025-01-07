@@ -136,6 +136,13 @@ function showFavouritesMenu()
 end
 
 function changeSoundForVehicle(vehicle, sound, label)
+
+    if IsVehicleSirenOn(vehicle) then
+        -- weird bug with LVC that caused sirens to emit noise whilst lights disabled
+        Config.Notify("You can't change the engine sound while the siren is on!", "error")
+        return false
+    end
+
     TriggerServerEvent(
         "Chroma:EngineSounds:ChangeEngineSound",
         {
@@ -144,6 +151,7 @@ function changeSoundForVehicle(vehicle, sound, label)
             label = label
         }
     )
+    return true
 end
 
 local storedModelSounds = GetResourceKvpString("storedModelSounds") and json.decode(GetResourceKvpString("storedModelSounds")) or {}
@@ -206,7 +214,8 @@ lib.registerMenu(
                 return Config.Notify("You aren't able to use this right now!", "error")
             end
 
-            changeSoundForVehicle(cache.vehicle, Config.EngineSounds[DisplayLabels[scrollIndex]], DisplayLabels[scrollIndex])
+            local success = changeSoundForVehicle(cache.vehicle, Config.EngineSounds[DisplayLabels[scrollIndex]], DisplayLabels[scrollIndex])
+            if not success then return end
 
             if storeSoundsForModel then
                 local vehicleModel = GetEntityModel(cache.vehicle)
