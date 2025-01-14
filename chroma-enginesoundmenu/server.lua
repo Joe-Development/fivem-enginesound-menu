@@ -28,6 +28,11 @@ RegisterServerEvent("Chroma:EngineSounds:ChangeEngineSound", function(data)
     lib.print.debug(format("%s [%s] has changed their engine sound to %s", GetPlayerName(src), src, data.label))
 end)
 
+lib.callback.register("Chroma:EngineSounds:GetPerms", function(source)
+    return Config.HasPermission(source)
+end)
+
+-- Version Checking
 CreateThread(function()
     if not Config.CheckForUpdates then
         print(
