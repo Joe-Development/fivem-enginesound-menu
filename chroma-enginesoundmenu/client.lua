@@ -9,6 +9,7 @@ local GetEntityModel = GetEntityModel
 local storeSoundsForModel = GetResourceKvpInt("storeSoundsForModel") ~= 0 and true or Config.StoreSoundsByModel
 lib.print.debug("Store sounds for model: ", storeSoundsForModel)
 
+local hasPermissions = lib.callback.await("Chroma:EngineSounds:GetPerms", false)
 
 local Index = 1
 local Favourites = {}
@@ -117,14 +118,8 @@ function showFavouritesMenu()
                     return Config.Notify("You aren't able to use this right now!", "error")
                 end
 
-                TriggerServerEvent(
-                    "Chroma:EngineSounds:ChangeEngineSound",
-                    {
-                        net = VehToNet(cache.vehicle),
-                        sound = Config.EngineSounds[selectedFav],
-                        label = selectedFav
-                    }
-                )
+                local success = changeSoundForVehicle(cache.vehicle, Config.EngineSounds[selectedFav], selectedFav)
+                if not success then return end
 
                 Config.Notify(string.format("Engine sound changed to: %s", selectedFav), "success")
                 lib.showMenu("favourites_menu")
@@ -155,9 +150,9 @@ function changeSoundForVehicle(vehicle, sound, label)
 end
 
 local storedModelSounds = GetResourceKvpString("storedModelSounds") and json.decode(GetResourceKvpString("storedModelSounds")) or {}
-lib.print.debug("Stored model sounds: ", json.encode(storedModelSounds, {indent = true, pretty = true}))
 
 lib.onCache("vehicle", function(value)
+    if not hasPermissions then return end
     if not value then return end
     if not storeSoundsForModel then return end
     local driverPed = GetPedInVehicleSeat(value, -1)
@@ -185,7 +180,6 @@ lib.registerMenu(
         onCheck = function(selected, checked, args)
             if selected == 4 then
                 -- store sounds on models
-                print(checked)
                 storeSoundsForModel = checked
                 SetResourceKvpInt("storeSoundsForModel", storeSoundsForModel and 1 or 0)
                 if storeSoundsForModel then
@@ -253,6 +247,7 @@ lib.registerMenu(
 RegisterNetEvent(
     "Chroma:EngineSounds:OpenMenu",
     function()
+        hasPermissions = true -- incase they get permissions added after startup
         if not cache.vehicle or cache.seat ~= -1 then
             return Config.Notify("You need to be driving a vehicle to use this!", "error")
         end
