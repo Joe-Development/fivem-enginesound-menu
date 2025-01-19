@@ -1,4 +1,5 @@
 local DisplayLabels = {}
+Config.EngineSounds["Restore Default"] = "resetenginesound" -- hash is invalid so game resets to base sound
 for k, _ in pairs(Config.EngineSounds) do
     DisplayLabels[#DisplayLabels + 1] = k
 end
@@ -39,14 +40,17 @@ local function showEngineSoundMenu()
         },
         1
     )
-    lib.setMenuOptions("engine_sound_menu", {label = "Store Sounds Per Model", description = "If you use an engine sound on a vehicle it will save, if you spawn this vehicle again, it will restore that last used engine sound.", checked = storeSoundsForModel, icon = "fa-solid fa-floppy-disk"}, 4)
+    lib.setMenuOptions("engine_sound_menu",
+        { label = "Store Sounds Per Model", description =
+        "If you use an engine sound on a vehicle it will save, if you spawn this vehicle again, it will restore that last used engine sound.", checked =
+        storeSoundsForModel, icon = "fa-solid fa-floppy-disk" }, 4)
     lib.showMenu("engine_sound_menu")
 end
 
 local function showRemoveFavouritesMenu()
     local removeOptions = {}
     for fav, _ in pairs(Favourites) do
-        removeOptions[#removeOptions+1] = { label = fav, icon = 'trash' }
+        removeOptions[#removeOptions + 1] = { label = fav, icon = 'trash' }
     end
 
     lib.registerMenu(
@@ -91,9 +95,9 @@ function showFavouritesMenu()
 
     local favouriteOptions = {}
     for fav, _ in pairs(Favourites) do
-        favouriteOptions[#favouriteOptions+1] = { label = fav, icon = 'star' }
+        favouriteOptions[#favouriteOptions + 1] = { label = fav, icon = 'star' }
     end
-    favouriteOptions[#favouriteOptions+1] = {label="Remove from Favourites", icon="trash"}
+    favouriteOptions[#favouriteOptions + 1] = { label = "Remove from Favourites", icon = "trash" }
 
     lib.registerMenu(
         {
@@ -131,7 +135,6 @@ function showFavouritesMenu()
 end
 
 function changeSoundForVehicle(vehicle, sound, label)
-
     if IsVehicleSirenOn(vehicle) then
         -- weird bug with LVC that caused sirens to emit noise whilst lights disabled
         Config.Notify("You can't change the engine sound while the siren is on!", "error")
@@ -149,7 +152,8 @@ function changeSoundForVehicle(vehicle, sound, label)
     return true
 end
 
-local storedModelSounds = GetResourceKvpString("storedModelSounds") and json.decode(GetResourceKvpString("storedModelSounds")) or {}
+local storedModelSounds = GetResourceKvpString("storedModelSounds") and
+json.decode(GetResourceKvpString("storedModelSounds")) or {}
 
 lib.onCache("vehicle", function(value)
     if not hasPermissions then return end
@@ -161,7 +165,8 @@ lib.onCache("vehicle", function(value)
         return
     end
     local vehicleModel = GetEntityModel(value)
-    lib.print.debug(format("[vehicleChange] Model: %s - %s - %s", vehicleModel, storedModelSounds[vehicleModel], storedModelSounds[tostring(vehicleModel)]))
+    lib.print.debug(format("[vehicleChange] Model: %s - %s - %s", vehicleModel, storedModelSounds[vehicleModel],
+        storedModelSounds[tostring(vehicleModel)]))
     local savedModelSound = storedModelSounds[tostring(vehicleModel)]
     if savedModelSound then
         lib.print.debug(format("Found sound for model %s: %s", vehicleModel, savedModelSound.label))
@@ -187,14 +192,13 @@ lib.registerMenu(
                 else
                     Config.Notify("Engine sounds will no longer be stored per model!", "error")
                 end
-
             end
         end,
         options = {
-            {label = "Change Engine Sound", icon = "arrows-up-down-left-right", values = DisplayLabels},
-            {label = "Add to Favourites", icon = "heart"},
-            {label = "View Favourites", icon = "star"},
-            {label = "Store Sounds Per Model", description = "If you use an engine sound on a vehicle it will save, if you spawn this vehicle again, it will restore that last used engine sound.", checked = storeSoundsForModel, icon = "fa-solid fa-floppy-disk"}
+            { label = "Change Engine Sound",    icon = "arrows-up-down-left-right", values = DisplayLabels },
+            { label = "Add to Favourites",      icon = "heart" },
+            { label = "View Favourites",        icon = "star" },
+            { label = "Store Sounds Per Model", description = "If you use an engine sound on a vehicle it will save, if you spawn this vehicle again, it will restore that last used engine sound.", checked = storeSoundsForModel, icon = "fa-solid fa-floppy-disk" }
         }
     },
     function(selected, scrollIndex)
@@ -208,27 +212,36 @@ lib.registerMenu(
                 return Config.Notify("You aren't able to use this right now!", "error")
             end
 
-            local success = changeSoundForVehicle(cache.vehicle, Config.EngineSounds[DisplayLabels[scrollIndex]], DisplayLabels[scrollIndex])
+            local success = changeSoundForVehicle(cache.vehicle, Config.EngineSounds[DisplayLabels[scrollIndex]],
+                DisplayLabels[scrollIndex])
             if not success then return end
 
             if storeSoundsForModel then
                 local vehicleModel = GetEntityModel(cache.vehicle)
-                storedModelSounds[tostring(vehicleModel)] = {
-                    sound = Config.EngineSounds[DisplayLabels[scrollIndex]],
-                    label = DisplayLabels[scrollIndex]
-                }
-    
+
+                if DisplayLabels[scrollIndex] == "Restore Default" then
+                    storedModelSounds[tostring(vehicleModel)] = nil
+                else
+                    storedModelSounds[tostring(vehicleModel)] = {
+                        sound = Config.EngineSounds[DisplayLabels[scrollIndex]],
+                        label = DisplayLabels[scrollIndex]
+                    }
+                end
+
                 SetResourceKvp("storedModelSounds", json.encode(storedModelSounds))
-                lib.print.debug(format("Added sound for model %s: %s", vehicleModel, DisplayLabels[scrollIndex]))
+                lib.print.debug(format("Updated sound for model %s: %s", vehicleModel, DisplayLabels[scrollIndex]))
             end
 
             Config.Notify(string.format("Engine sound changed to: %s", DisplayLabels[scrollIndex]), "success")
-            if false then
-                lib.hideMenu("engine_sound_menu")
-            end
         elseif selected == 2 then
             -- add to favourites
             local soundName = DisplayLabels[Index]
+
+            if soundName == "Restore Default" then
+                Config.Notify("You can't favourite the default engine sound!", "error")
+                return
+            end
+
             if not Favourites[soundName] then
                 Favourites[soundName] = true
                 saveFavourites()
