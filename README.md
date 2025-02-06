@@ -2,6 +2,8 @@
 # chroma-enginesoundmenu - FiveM
 Easy to use menu to allow you to change your engine sound ingame - syncs to all clients via statebags.
 
+If you require support or need more information, please [visit our docs](https://docs.grav.wtf)
+
 ## Dependencies
 [ox_lib](https://github.com/overextended/ox_lib)
 
