@@ -7,8 +7,8 @@ If you require support or need more information, please [visit our docs](https:/
 ## Dependencies
 [ox_lib](https://github.com/overextended/ox_lib)
 
-The default permission ace for this command is `command.enginesound` - you can give this to a group such as:
-`add_ace group.donator command.enginesound allow`
+The default permission ace for this command is `enginesoundmenu` - you can give this to a group such as:
+`add_ace group.donator enginesoundmenu allow`
 
 If you want to edit the permissions check such as for jobs or your framework, edit the `server_config.lua`
 You can configure your sounds via `client_config.lua` as well as the default keybind - leave it blank if no default keybind is wanted.
