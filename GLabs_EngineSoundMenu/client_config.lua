@@ -6,7 +6,6 @@ Config = {
         -- customise this notification function to whatever you desire - by default it uses ox_lib but you can edit this
         lib.notify(
             {
-                title = "chroma-enginesoundmenu",
                 description = msg,
                 type = type,
                 position = "center-right",

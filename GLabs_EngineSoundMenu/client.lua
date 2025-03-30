@@ -10,7 +10,7 @@ local GetEntityModel = GetEntityModel
 local storeSoundsForModel = GetResourceKvpInt("storeSoundsForModel") ~= 0 and true or Config.StoreSoundsByModel
 lib.print.debug("Store sounds for model: ", storeSoundsForModel)
 
-local hasPermissions = lib.callback.await("Chroma:EngineSounds:GetPerms", false)
+local hasPermissions = lib.callback.await("GLabs:EngineSounds:GetPerms", false)
 
 local Index = 1
 local Favourites = {}
@@ -142,7 +142,7 @@ function changeSoundForVehicle(vehicle, sound, label)
     end
 
     TriggerServerEvent(
-        "Chroma:EngineSounds:ChangeEngineSound",
+        "GLabs:EngineSounds:ChangeEngineSound",
         {
             net = VehToNet(vehicle),
             sound = sound,
@@ -258,7 +258,7 @@ lib.registerMenu(
 )
 
 RegisterNetEvent(
-    "Chroma:EngineSounds:OpenMenu",
+    "GLabs:EngineSounds:OpenMenu",
     function()
         hasPermissions = true -- incase they get permissions added after startup
         if not cache.vehicle or cache.seat ~= -1 then

@@ -8,7 +8,6 @@ Config = {
         -- you can edit this to whatever you want, by default it uses ox_lib notifications
         TriggerClientEvent("ox_lib:notify", src, {
             description = msg,
-            title = 'chroma-enginesoundmenu',
             type = type,
             position = 'center-right',
             duration = 6500,
