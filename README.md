@@ -1,5 +1,6 @@
-<img src="https://github.com/Gravxd/fivem-enginesound-menu/assets/75702884/95a09e7e-d8aa-4955-ae0a-ae1ce6a639d4" width="100" height="100"><br>
-# GLabs_EngineSoundMenu - FiveM
+<img src="https://github.com/user-attachments/assets/cb715dfa-f670-4156-be3d-b6cb0c4c78a6" width="100" height="100"><br>
+
+# Engine Sound Menu - FiveM
 Easy to use menu to allow you to change your engine sound ingame - syncs to all clients via statebags.
 
 If you require support or need more information, please [visit our docs](https://docs.grav.wtf/docs/enginesoundmenu/information)
