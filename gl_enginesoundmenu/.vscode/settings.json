@@ -1,9 +1,0 @@
-{
-    "Lua.diagnostics.globals": [
-        "lib",
-        "cache"
-    ],
-    "Lua.diagnostics.disable": [
-        "lowercase-global"
-    ]
-}
